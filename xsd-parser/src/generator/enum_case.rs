@@ -55,7 +55,7 @@ pub trait EnumCaseGenerator {
                     "".into()
                 } else {
                     format!(
-                        "{indent}#[yaserde(rename = \"{rename}\")]\n",
+                        "{indent}#[yaserde(prefix = \"ns\" rename = \"{rename}\")]\n",
                         indent = gen.base().indent(),
                         rename = field_name
                     )

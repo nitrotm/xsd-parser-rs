@@ -76,7 +76,7 @@ pub trait EnumGenerator {
                     uri = tn.uri()
                 ),
                 None => format!(
-                    "{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                    "{derives}#[yaserde(prefix = \"ns\", namespace = \"ns: {uri}\")]\n",
                     derives = derives,
                     uri = tn.uri()
                 ),

@@ -90,7 +90,7 @@ pub trait StructGenerator {
                     uri = tn.uri()
                 ),
                 None => format!(
-                    "{derives}#[yaserde(namespace = \"{uri}\")]\n",
+                    "{derives}#[yaserde(prefix = \"ns\" namespace = \"ns: {uri}\", default_namespace = \"ns\")]\n",
                     derives = derives,
                     uri = tn.uri()
                 ),

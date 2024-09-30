@@ -92,7 +92,9 @@ pub fn yaserde_for_element(
         Some(p) => {
             format!("{}#[yaserde(prefix = \"{}\", rename = \"{}\")]\n", indent, p, field_name)
         }
-        None => format!("{}#[yaserde(rename = \"{}\")]\n", indent, field_name),
+        None => {
+            format!("{}#[yaserde(prefix = \"ns\" rename = \"{}\")]\n", indent, field_name)
+        }
     }
 }
 

@@ -39,11 +39,21 @@ pub struct Generator<'input> {
     pub import_gen: Option<Box<dyn ImportGenerator>>,
 }
 
+const FILE_HEADER: &str = r#"
+use std::str::FromStr;
+
+use xsd_parser::generator::validator::Validate;
+use xsd_types::types as xs;
+
+"#;
+
 impl<'input> Generator<'input> {
     pub fn generate_rs_file(&self, schema: &RsFile<'input>) -> String {
         *self.target_ns.borrow_mut() = schema.target_ns.clone();
         *self.xsd_ns.borrow_mut() = schema.xsd_ns.clone();
-        schema.types.iter().map(|entity| self.generate(entity)).collect()
+        let body: String = schema.types.iter().map(|entity| self.generate(entity)).collect();
+
+        FILE_HEADER.to_owned() + &body
     }
 
     pub fn generate(&self, entity: &RsEntity) -> String {
