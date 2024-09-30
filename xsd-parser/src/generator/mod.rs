@@ -26,6 +26,8 @@ use crate::{
 
 #[derive(Default)]
 pub struct Generator<'input> {
+    pub render_header: bool,
+
     pub target_ns: RefCell<Option<Namespace<'input>>>,
     pub xsd_ns: RefCell<Option<Namespace<'input>>>,
 
@@ -39,8 +41,7 @@ pub struct Generator<'input> {
     pub import_gen: Option<Box<dyn ImportGenerator>>,
 }
 
-const FILE_HEADER: &str = r#"
-use std::str::FromStr;
+const FILE_HEADER: &str = r#"use std::str::FromStr;
 
 use xsd_parser::generator::validator::Validate;
 use xsd_types::types as xs;
@@ -53,7 +54,11 @@ impl<'input> Generator<'input> {
         *self.xsd_ns.borrow_mut() = schema.xsd_ns.clone();
         let body: String = schema.types.iter().map(|entity| self.generate(entity)).collect();
 
-        FILE_HEADER.to_owned() + &body
+        if self.render_header && !body.is_empty() {
+            FILE_HEADER.to_owned() + &body
+        } else {
+            body
+        }
     }
 
     pub fn generate(&self, entity: &RsEntity) -> String {

@@ -43,7 +43,8 @@ pub trait EnumCaseGenerator {
         }
 
         let (prefix, field_name) = split_name(entity.name.as_str());
-        match prefix {
+        let tns = gen.target_ns.borrow();
+        match prefix.or(tns.as_ref().and_then(|tn| tn.name())) {
             Some(p) => format!(
                 "{indent}#[yaserde(prefix = \"{prefix}\", rename = \"{rename}\")]\n",
                 indent = gen.base().indent(),

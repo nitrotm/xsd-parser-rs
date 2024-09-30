@@ -17,6 +17,11 @@ pub struct GeneratorBuilder<'input> {
 
 #[allow(dead_code)]
 impl<'input> GeneratorBuilder<'input> {
+    pub fn with_render_header(mut self, enable: bool) -> Self {
+        self.gen.render_header = enable;
+        self
+    }
+
     pub fn with_base_gen(mut self, base: Box<dyn BaseGenerator>) -> Self {
         self.gen.base = Some(base);
         self
