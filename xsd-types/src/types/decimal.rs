@@ -1,26 +1,26 @@
 use std::{fmt, str::FromStr};
 
-use bigdecimal::{BigDecimal, ParseBigDecimalError};
+use rust_decimal::{Decimal as RDecimal, Error as RError};
 use xsd_macro_utils::UtilsDefaultSerde;
 
 #[derive(Default, Clone, PartialEq, PartialOrd, Debug, UtilsDefaultSerde)]
-pub struct Decimal(pub BigDecimal);
+pub struct Decimal(pub RDecimal);
 
 impl Decimal {
-    pub fn from_bigdecimal(bigdecimal: BigDecimal) -> Self {
+    pub fn from_bigdecimal(bigdecimal: RDecimal) -> Self {
         Decimal(bigdecimal)
     }
 
-    pub fn to_bigdecimal(&self) -> BigDecimal {
+    pub fn to_bigdecimal(&self) -> RDecimal {
         self.0.clone()
     }
 }
 
 impl FromStr for Decimal {
-    type Err = ParseBigDecimalError;
+    type Err = RError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Decimal(BigDecimal::from_str(s)?))
+        Ok(Decimal(RDecimal::from_str(s)?))
     }
 }
 
@@ -32,7 +32,6 @@ impl fmt::Display for Decimal {
 
 #[cfg(test)]
 mod tests {
-    use num_bigint::ToBigInt;
     use yaserde_derive::{YaDeserialize, YaSerialize};
 
     use super::*;
@@ -57,8 +56,8 @@ mod tests {
             </t:DecimalPair>
             "#;
         let i = DecimalPair {
-            first: Decimal::from_bigdecimal(BigDecimal::new(1234.to_bigint().unwrap(), 5)),
-            second: Decimal::from_bigdecimal(BigDecimal::new((-1234).to_bigint().unwrap(), 2)),
+            first: Decimal::from_bigdecimal(RDecimal::new(1234, 5)),
+            second: Decimal::from_bigdecimal(RDecimal::new(-1234, 2)),
         };
         let actual = yaserde::ser::to_string(&i).unwrap();
         assert_xml_eq(&actual, expected);
@@ -74,7 +73,7 @@ mod tests {
             </t:DecimalPair>
             "#;
         let i: DecimalPair = yaserde::de::from_str(s).unwrap();
-        assert_eq!(i.first.to_bigdecimal(), BigDecimal::new(1234.to_bigint().unwrap(), 5));
-        assert_eq!(i.second.to_bigdecimal(), BigDecimal::new((-1234).to_bigint().unwrap(), 2));
+        assert_eq!(i.first.to_bigdecimal(), RDecimal::new(1234, 5));
+        assert_eq!(i.second.to_bigdecimal(), RDecimal::new(-1234, 2));
     }
 }
