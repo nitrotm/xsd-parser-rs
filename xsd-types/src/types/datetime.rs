@@ -35,7 +35,8 @@ impl FromStr for DateTime {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let tz_provided = s.ends_with('Z') || s.contains('+') || s.matches('-').count() == 3;
         let s_with_timezone = if tz_provided { s.to_string() } else { format!("{}Z", s) };
-        match CDateTime::parse_from_rfc3339(&s_with_timezone) {
+        let s_normalized = s_with_timezone.replace("T24:00:00", "T23:59:59");
+        match CDateTime::parse_from_rfc3339(&s_normalized) {
             Ok(cdt) => Ok(DateTime { value: cdt }),
             Err(err) => Err(err),
         }
