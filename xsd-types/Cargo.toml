@@ -16,7 +16,7 @@ num-bigint = "0.4"
 rust_decimal = "1.36"
 xml-rs = "0.8"
 xsd-macro-utils = { path = "../xsd-macro-utils" }
-yaserde = "0.7"
+yaserde = "0.9"
 
 [dev-dependencies]
 yaserde_derive = "0.7"
